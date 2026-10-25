@@ -18,19 +18,11 @@ function generateRSAKeyPair() {
   return { publicKey, privateKey };
 }
 
-// Function to pad data
-function padData(data) {
-  const blockSize = 16;
-  const padding = blockSize - (data.length % blockSize);
-  const paddedData = Buffer.concat([data, Buffer.alloc(padding, padding)]);
-  return paddedData;
-}
-
 // Function to encrypt data using AES
+// createCipheriv applies PKCS7 padding by default, and decrypt.js removes it.
 function encryptData(data, sessionKey, iv) {
   const cipher = crypto.createCipheriv('aes-256-cbc', sessionKey, iv);
-  const paddedData = padData(data);
-  const encryptedData = Buffer.concat([cipher.update(paddedData), cipher.final()]);
+  const encryptedData = Buffer.concat([cipher.update(data), cipher.final()]);
   return encryptedData;
 }
 
